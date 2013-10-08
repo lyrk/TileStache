@@ -61,7 +61,7 @@ class ImageProvider:
         - http://trac.mapnik.org/wiki/XMLConfigReference
     """
     
-    def __init__(self, layer, mapfile, fonts=None):
+    def __init__(self, layer, mapfile, retina=False, fonts=None):
         """ Initialize Mapnik provider with layer and mapfile.
             
             XML mapfile keyword arg comes from TileStache config,
@@ -77,6 +77,11 @@ class ImageProvider:
         
         self.layer = layer
         self.mapnik = None
+
+        if retina is True:
+            self.scale = 2
+        else:
+            self.scale = 4
         
         engine = mapnik.FontEngine.instance()
         
@@ -89,6 +94,8 @@ class ImageProvider:
         
             for font in glob(path.rstrip('/') + '/*.ttf'):
                 engine.register_font(str(font))
+
+        print(layer.config)
 
     @staticmethod
     def prepareKeywordArgs(config_dict):
@@ -120,7 +127,7 @@ class ImageProvider:
                 self.mapnik.zoom_to_box(Box2d(xmin, ymin, xmax, ymax))
             
                 img = mapnik.Image(width, height)
-                mapnik.render(self.mapnik, img) 
+                mapnik.render(self.mapnik, img, self.scale) 
             except:
                 self.mapnik = None
                 raise
