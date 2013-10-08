@@ -94,8 +94,7 @@ class ImageProvider:
         
             for font in glob(path.rstrip('/') + '/*.ttf'):
                 engine.register_font(str(font))
-
-        print(layer.config)
+                
 
     @staticmethod
     def prepareKeywordArgs(config_dict):
