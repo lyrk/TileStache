@@ -373,6 +373,9 @@ def _parseConfigfileLayer(layer_dict, config, dirpath):
     if 'tile height' in layer_dict:
         layer_kwargs['tile_height'] = int(layer_dict['tile height'])
     
+    if 'retina' in layer_dict:
+        layer_kwargs['retina'] = bool(layer_dict['retina'])
+
     if 'preview' in layer_dict:
         preview_dict = layer_dict['preview']
         

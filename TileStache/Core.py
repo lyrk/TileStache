@@ -310,7 +310,7 @@ class Layer:
             assumed to be square, and Layer.render() will respond with an error
             if the rendered image is not this height.
     """
-    def __init__(self, config, projection, metatile, stale_lock_timeout=15, cache_lifespan=None, write_cache=True, allowed_origin=None, max_cache_age=None, redirects=None, preview_lat=37.80, preview_lon=-122.26, preview_zoom=10, preview_ext='png', bounds=None, tile_height=256):
+    def __init__(self, config, projection, metatile, stale_lock_timeout=15, cache_lifespan=None, write_cache=True, allowed_origin=None, max_cache_age=None, redirects=None, preview_lat=37.80, preview_lon=-122.26, preview_zoom=10, preview_ext='png', bounds=None, tile_height=256, retina=False):
         self.provider = None
         self.config = config
         self.projection = projection
@@ -334,6 +334,8 @@ class Layer:
         self.bitmap_palette = None
         self.jpeg_options = {}
         self.png_options = {}
+
+        self.retina = retina
 
     def name(self):
         """ Figure out what I'm called, return a name if there is one.
@@ -529,7 +531,7 @@ class Layer:
                 if self.palette256:
                     # this is where we have PIL optimally palette our image
                     subtile = apply_palette256(subtile)
-                
+
                 subtile.save(buff, format)
                 body = buff.getvalue()
 
