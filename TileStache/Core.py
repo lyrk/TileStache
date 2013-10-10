@@ -334,6 +334,7 @@ class Layer:
         self.bitmap_palette = None
         self.jpeg_options = {}
         self.png_options = {}
+        self.palette256 = False
 
         self.retina = retina
 
