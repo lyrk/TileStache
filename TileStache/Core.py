@@ -529,7 +529,7 @@ class Layer:
                 buff = StringIO()
                 bbox = (x, y, x + self.dim, y + self.dim)
                 subtile = surtile.crop(bbox)
-                if self.palette256:
+                if self.palette256 and format.lower() == 'png':
                     # this is where we have PIL optimally palette our image
                     subtile = apply_palette256(subtile)
 
