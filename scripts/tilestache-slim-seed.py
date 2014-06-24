@@ -15,9 +15,8 @@ from optparse import OptionParser
 from urlparse import urlparse
 from urllib import urlopen
 
-try:
-    from json import dump as json_dump
-    from json import load as json_load
+from json import dump as json_dump
+from json import load as json_load
 
 #
 # Most imports can be found below, after the --include-path option is known.
@@ -57,9 +56,6 @@ parser.add_option('-p', '--padding', dest='padding',
 parser.add_option('-e', '--extension', dest='extension',
                   help='Optional file type for rendered tiles. Default value is "png" for most image layers and some variety of JSON for Vector or Mapnik Grid providers.')
 
-parser.add_option('-f', '--progress-file', dest='progressfile',
-                  help="Optional JSON progress file that gets written on each iteration, so you don't have to pay close attention.")
-
 parser.add_option('-q', action='store_false', dest='verbose',
                   help='Suppress chatty output, --progress-file works well with this.')
 
@@ -68,10 +64,6 @@ parser.add_option('-i', '--include-path', dest='include_paths',
 
 parser.add_option('-d', '--output-directory', dest='outputdirectory',
                   help='Optional output directory for tiles, to override configured cache with the equivalent of: {"name": "Disk", "path": <output directory>, "dirs": "portable", "gzip": []}. More information in http://tilestache.org/doc/#caches.')
-
-parser.add_option('--to-s3', dest='s3_output',
-                  help='Optional output bucket for tiles, will be populated with tiles in a standard Z/X/Y layout. Three required arguments: AWS access-key, secret, and bucket name.',
-                  nargs=3)
 
 parser.add_option('--tile-list', dest='tile_list',
                   help='Optional file of tile coordinates, a simple text list of Z/X/Y coordinates. Overrides --bbox and --padding.')
@@ -210,11 +202,6 @@ if __name__ == '__main__':
         if options.outputdirectory:
             tiers.append(dict(name='disk', path=options.outputdirectory,
                               dirs='portable', gzip=[]))
-
-        if options.s3_output:
-            access, secret, bucket = options.s3_output
-            tiers.append(dict(name='S3', bucket=bucket,
-                              access=access, secret=secret))
         
         if len(tiers) > 1:
             config_dict['cache'] = dict(name='multi', tiers=tiers)
@@ -321,8 +308,3 @@ if __name__ == '__main__':
         
                 if options.verbose:
                     print >> stderr, '%(tile)s (%(size)s)' % progress
-                
-        if options.progressfile:
-            fp = open(options.progressfile, 'w')
-            json_dump(progress, fp)
-            fp.close()
