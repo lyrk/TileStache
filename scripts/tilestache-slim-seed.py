@@ -9,6 +9,10 @@ West Oakland (http://sta.mn/ck) in the "osm" layer, for zoom levels 12-15:
 See `tilestache-seed.py --help` for more information.
 """
 
+WEBP_MINZOOM = 12
+
+import os
+
 from sys import stderr, path
 from os.path import realpath, dirname
 from optparse import OptionParser
@@ -77,6 +81,8 @@ parser.add_option('--enable-retries', dest='enable_retries',
 
 parser.add_option('-x', '--ignore-cached', action='store_true', dest='ignore_cached',
                   help='Re-render every tile, whether it is in the cache already or not.')
+
+parser.add_option('-r', '--refresh-only', dest='refresh_only', action='store_true', help='Only existing tiles will be rerendered, no new will be created.')
 
 parser.add_option('--jsonp-callback', dest='callback',
                   help='Add a JSONP callback for tiles with a json mime-type, causing "*.js" tiles to be written to the cache wrapped in the callback function. Ignored for non-JSON tiles.')
@@ -250,6 +256,12 @@ if __name__ == '__main__':
         coordinates = generateCoordinates(ul, lr, zooms, padding)
     
     for (offset, count, coord) in coordinates:
+        #TODO: implement refresh only
+        if options.refresh_only:
+            if not os.path.lexists(os.path.join(config_dict['cache']['path'], layer.name(), coord.zoom, coord.column, coord.row+".png")):
+                print "skipping %s/%s/%s" % (coord.zoom, coord.column, coord.row)
+                continue
+
         path = '%s/%d/%d/%d.%s' % (layer.name(), coord.zoom, coord.column, coord.row, extension)
 
         progress = {"tile": path,
@@ -305,6 +317,10 @@ if __name__ == '__main__':
                 #
                 rendered = True
                 progress['size'] = '%dKB' % (len(content) / 1024)
+
+                if WEBP_MINZOOM >= coord.zoom:
+                    #TODO: convert to webp
+                    pass
         
                 if options.verbose:
                     print >> stderr, '%(tile)s (%(size)s)' % progress
