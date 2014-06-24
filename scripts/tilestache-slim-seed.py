@@ -258,7 +258,7 @@ if __name__ == '__main__':
     for (offset, count, coord) in coordinates:
         #TODO: implement refresh only
         if options.refresh_only:
-            if not os.path.lexists(os.path.join(config_dict['cache']['path'], layer.name(), coord.zoom, coord.column, coord.row+".png")):
+            if not os.path.lexists(os.path.join(config_dict['cache']['path'], layer.name(), str(coord.zoom), str(coord.column), str(coord.row)+".png")):
                 print "skipping %s/%s/%s" % (coord.zoom, coord.column, coord.row)
                 continue
 
